@@ -34,7 +34,7 @@
                           ItemsSource="{Binding Algorithms}"/>
                 <TextBox
                     Text="{Binding AlgorithmData, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
-                         IsEnabled="{Binding AlgorithmData.IsRequiredAlgorithmData}"
+                         IsEnabled="{Binding EnableAlgorithmData, Mode=OneWay}"
                          Validation.ErrorTemplate="{StaticResource errorTemplate}"
                     metro:TextBoxHelper.UseFloatingWatermark="True"/>
             </DockPanel>

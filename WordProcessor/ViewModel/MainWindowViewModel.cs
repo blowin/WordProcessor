@@ -31,7 +31,8 @@ namespace WordProcessor.ViewModel
     private string _processText;
 
     private bool _enableSeparatorData;
-
+    private bool _enableAlgorithmData;
+    
     private bool _openFileAfterProcess;
 
     public string Error
@@ -67,6 +68,12 @@ namespace WordProcessor.ViewModel
     {
       get => _enableSeparatorData;
       set => this.RaiseAndSetIfChanged(ref _enableSeparatorData, value);
+    }
+
+    public bool EnableAlgorithmData
+    {
+      get => _enableAlgorithmData;
+      set => this.RaiseAndSetIfChanged(ref _enableAlgorithmData, value);
     }
     
     public bool NeedAskRewriteFile
@@ -164,26 +171,18 @@ namespace WordProcessor.ViewModel
       this.WhenValueChanged(model => model.SeparatorType).Subscribe(separator =>
       {
         EnableSeparatorData = IsRequiredSeparator(separator);
-        if (EnableSeparatorData)
-        {
-          this.RaisePropertyChanged(nameof(CustomSeparator)); 
-        }
-        else
+        if (!EnableSeparatorData)
         {
           CustomSeparator = null;
         }
+
+        this.RaisePropertyChanged(nameof(CustomSeparator)); 
       });
 
       this.WhenValueChanged(m => m.AlgorithmType).Subscribe(a =>
       {
-        if (!a.IsRequiredAlgorithmData && !string.IsNullOrEmpty(AlgorithmData))
-        {
-          AlgorithmData = null;
-        }
-        else
-        {
-          this.RaisePropertyChanged(nameof(AlgorithmData));  
-        }
+        EnableAlgorithmData = a.IsRequiredAlgorithmData;
+        this.RaisePropertyChanged(nameof(AlgorithmData));
       });
       
       OpenFileAfterProcess = true;
