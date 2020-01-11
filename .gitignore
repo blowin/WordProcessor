@@ -1,0 +1,5 @@
+﻿_ReSharper.Caches
+.idea
+.vs
+WordProcessor/obj
+WordProcessor/bin
