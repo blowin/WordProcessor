@@ -33,7 +33,7 @@ namespace WordProcessor.DataTypes.Algorithms
 
     public IEnumerable<string> Process(IEnumerable<string> input, string algorithmData)
     {
-      return ProcessInternal(input.WhereNotBlank(), algorithmData);
+      return ProcessInternal(input.WhereNotBlank().Select(s => s.Trim()), algorithmData);
     }
     
     protected abstract IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData);
