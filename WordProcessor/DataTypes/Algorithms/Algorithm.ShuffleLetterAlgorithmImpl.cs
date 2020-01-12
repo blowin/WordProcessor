@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WordProcessor.Util.Extension;
 
 namespace WordProcessor.DataTypes.Algorithms
@@ -19,11 +20,11 @@ namespace WordProcessor.DataTypes.Algorithms
 
       public override string ErrorMessageForEmptyInput => string.Empty;
 
-      protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
+      protected override IEnumerable<string> ProcessInternal(IEnumerable<ReadOnlyMemory<char>> input, string algorithmData)
       {
         foreach (var s in input)
         {
-          var charArr = s.ToCharArray();
+          var charArr = s.ToArray();
           Random.Shuffle(charArr, IgnoreValues);
           yield return charArr.BuildString();
         }

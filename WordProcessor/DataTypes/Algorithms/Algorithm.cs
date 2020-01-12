@@ -33,10 +33,11 @@ namespace WordProcessor.DataTypes.Algorithms
 
     public IEnumerable<string> Process(IEnumerable<string> input, string algorithmData)
     {
-      return ProcessInternal(input.WhereNotBlank().Select(s => s.Trim()), algorithmData);
+      var filterValues = input.WhereNotBlank().Select(s => s.AsMemory().Trim());
+      return ProcessInternal(filterValues, algorithmData);
     }
     
-    protected abstract IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData);
+    protected abstract IEnumerable<string> ProcessInternal(IEnumerable<ReadOnlyMemory<char>> input, string algorithmData);
 
     public abstract bool IsValidAlgorithmData(string data);
   }

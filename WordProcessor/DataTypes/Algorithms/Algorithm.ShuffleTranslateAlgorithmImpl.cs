@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WordProcessor.Util.Extension;
 
 namespace WordProcessor.DataTypes.Algorithms
@@ -7,9 +8,9 @@ namespace WordProcessor.DataTypes.Algorithms
   {
     private sealed class ShuffleTranslateAlgorithmImpl : Algorithm
     {
-      private static readonly string[] IgnoreValues = 
+      private static readonly ReadOnlyMemory<char>[] IgnoreValues = 
       {
-        " "
+        " ".AsMemory()
       };
 
       public override string Name => LocalizationManager.GetLocalizationString("m_algo_name_ShuffleTranslate");
@@ -19,22 +20,24 @@ namespace WordProcessor.DataTypes.Algorithms
       public override string ErrorMessageForEmptyInput 
         => LocalizationManager.GetLocalizationString("m_valid_AlgorithmData_ShuffleTranslate");
 
-      protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
+      protected override IEnumerable<string> ProcessInternal(IEnumerable<ReadOnlyMemory<char>> input, string algorithmData)
       {
-        var column1 = new List<string>();
-        var column2 = new List<string>();
+        var column1 = new List<ReadOnlyMemory<char>>();
+        var column2 = new List<ReadOnlyMemory<char>>();
         foreach (var s in input)
         {
-          var splitWords = s.Split(algorithmData);
-          if (splitWords.Length > 1)
+          var separatorIdx = s.Span.IndexOf(algorithmData.AsSpan());
+          if (separatorIdx > 0)
           {
-            column1.Add(splitWords[0]);
-            column2.Add(splitWords[1]);
+            var firstPart = s.Slice(0, separatorIdx).Trim();
+            var secondPart = s.Slice(separatorIdx + 1).Trim();
+            column1.Add(firstPart);
+            column2.Add(secondPart);
           }
           else
           {
-            column1.Add(splitWords[0]);
-            column2.Add(string.Empty);
+            column1.Add(separatorIdx != 0 ? s.Trim() : string.Empty.AsMemory());
+            column2.Add(string.Empty.AsMemory());
           }
         }
 
@@ -42,7 +45,7 @@ namespace WordProcessor.DataTypes.Algorithms
 
         for (var i = 0; i < column1.Count; i++)
         {
-          yield return column1[i].Trim() + " - " + column2[i].Trim();
+          yield return column1[i] + algorithmData + column2[i];
         }
       }
 

@@ -15,7 +15,7 @@ namespace WordProcessor.DataTypes.Algorithms
       public override string ErrorMessageForEmptyInput =>
         LocalizationManager.GetLocalizationString("m_valid_AlgorithmData_ReplaceLetter");
 
-      protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
+      protected override IEnumerable<string> ProcessInternal(IEnumerable<ReadOnlyMemory<char>> input, string algorithmData)
       {
         const char replaceLetter = '_';
 
@@ -29,7 +29,7 @@ namespace WordProcessor.DataTypes.Algorithms
           else
           {
             var replaceCount = 0;
-            var charArr = s.ToCharArray();
+            var charArr = s.ToArray();
             while (replaceCount < replaceLetterCount)
             {
               var randomIdx = Random.Next(0, s.Length);
