@@ -4,9 +4,15 @@
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:algo="clr-namespace:WordProcessor.DataTypes.Algorithms"
+          xmlns:dt="clr-namespace:WordProcessor.DataTypes"
           mc:Ignorable="d"
-          Title="Помощь жене" Height="420" Width="700">
+          Title="{DynamicResource m_Title}" Height="420" Width="700">
     <metro:MetroWindow.Resources>
+        <DataTemplate x:Key="algo_t"
+            DataType="{x:Type algo:Algorithm}">
+            <TextBlock Text="{Binding Name}"></TextBlock>
+        </DataTemplate>
         <ControlTemplate x:Key="errorTemplate">
             <Border BorderBrush="OrangeRed" BorderThickness="2">
                 <Grid>
@@ -26,12 +32,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <DockPanel>
-                <Label Content="Алгоритм:" Margin="0,0,5,0" Width="80"/>
+            <ComboBox 
+                DisplayMemberPath="DisplayName"
+                SelectedItem="{Binding Language}"
+                ItemsSource="{Binding Languages}"/>
+            <DockPanel Margin="0, 5, 0, 0">
+                <Label Content="{DynamicResource m_lblAlgorithm}" Margin="0,0,5,0" Width="80"/>
                 <ComboBox DockPanel.Dock="Left" Width="170" Margin="0,0,5,0" 
                           DisplayMemberPath="Name"
-                          SelectedItem="{Binding AlgorithmType}"
-                          ItemsSource="{Binding Algorithms}"/>
+                          SelectedItem="{Binding AlgorithmType, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding Algorithms, Mode=OneTime}">
+                    
+                </ComboBox>
                 <TextBox
                     Text="{Binding AlgorithmData, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
                          IsEnabled="{Binding EnableAlgorithmData, Mode=OneWay}"
@@ -39,10 +51,12 @@
                     metro:TextBoxHelper.UseFloatingWatermark="True"/>
             </DockPanel>
             <DockPanel LastChildFill="True" Margin="0, 5, 0, 0">
-                <Label DockPanel.Dock="Left" Content="Разделитель:" Margin="0,0,5,0" Width="80"/>
-                <ComboBox DockPanel.Dock="Left" Width="170" Margin="0,0,5,0" 
-                          SelectedItem="{Binding SeparatorType}"
-                          ItemsSource="{Binding Separators}"/>
+                <Label DockPanel.Dock="Left" Content="{DynamicResource m_lblSeparator}" Margin="0,0,5,0" Width="80"/>
+                <ComboBox DockPanel.Dock="Left" Width="170" Margin="0,0,5,0"
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding SeparatorType, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding Separators, Mode=OneTime}">
+                </ComboBox>
                 <TextBox Text="{Binding CustomSeparator, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
                          IsEnabled="{Binding EnableSeparatorData}"
                          Validation.ErrorTemplate="{StaticResource errorTemplate}"
@@ -55,17 +69,17 @@
                  Validation.ErrorTemplate="{StaticResource errorTemplate}"/>
         <StackPanel Grid.Row="2" Margin="0, 5, 0, 0">
             <DockPanel LastChildFill="True" Margin="0,5,0,0" >
-                <Label DockPanel.Dock="Left" Margin="0,0,5,0" >Сохранить:</Label>
-                <Button DockPanel.Dock="Right" Width="90" Command="{Binding ChoiceSavePath}">Выбрать</Button>
+                <Label DockPanel.Dock="Left" Margin="0,0,5,0" Content="{DynamicResource m_lblSave}" />
+                <Button DockPanel.Dock="Right" Width="90" Command="{Binding ChoiceSavePath}" Content="{DynamicResource m_btnChoice}"/>
                 <TextBox Margin="0,0,5,0" 
                          Text="{Binding SavePath, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                          Validation.ErrorTemplate="{StaticResource errorTemplate}"/>
             </DockPanel>
-            <CheckBox Content="Спрашивать перезаписать файл, если существует" Margin="0,5,0,0"
+            <CheckBox Content="{DynamicResource m_chkAskRewriteFile}" Margin="0,5,0,0"
                       IsChecked="{Binding NeedAskRewriteFile}"/>
-            <CheckBox Content="Открыть файл после обработки" Margin="0,5,0,0" IsChecked="{Binding OpenFileAfterProcess}"/>
+            <CheckBox Content="{DynamicResource m_chkOpenFileAfterProcess}" Margin="0,5,0,0" IsChecked="{Binding OpenFileAfterProcess}"/>
         </StackPanel>
 
-        <Button Grid.Row="3" Margin="0,5,0,0" Command="{Binding ProcessCommand}">Запустить</Button>
+        <Button Grid.Row="3" Margin="0,5,0,0" Command="{Binding ProcessCommand}" Content="{DynamicResource m_btnProcess}"/>
     </Grid>
 </metro:MetroWindow>

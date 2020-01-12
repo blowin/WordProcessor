@@ -2,15 +2,15 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Windows.Forms;
 using DynamicData.Binding;
 using ReactiveUI;
+using WordProcessor.DataTypes;
 using WordProcessor.DataTypes.Algorithms;
-using WordProcessor.Enums;
-using WordProcessor.Util;
 using WordProcessor.Validator;
 
 namespace WordProcessor.ViewModel
@@ -63,6 +63,19 @@ namespace WordProcessor.ViewModel
 
     public ObservableCollection<Algorithm> Algorithms { get; }
     public ObservableCollection<Separator> Separators { get; }
+
+    public ObservableCollection<CultureInfo> Languages => LocalizationManager.Languages;
+    
+    public CultureInfo Language
+    {
+      get => LocalizationManager.Language;
+      set
+      {
+        var lang = LocalizationManager.Language;
+        LocalizationManager.Language = value;
+        this.RaiseAndSetIfChanged(ref lang, value);
+      }
+    }
 
     public bool EnableSeparatorData
     {
@@ -130,6 +143,8 @@ namespace WordProcessor.ViewModel
 
     public MainWindowViewModel()
     {
+      // TODO fix Name for ComboBox
+
       _validator = new MainWindowViewModelValidator();
 
       var checkTrigger = this.WhenAnyValue(x => x.AlgorithmType,
@@ -152,7 +167,7 @@ namespace WordProcessor.ViewModel
           return true;
         });
       checkTrigger.Subscribe(x => {});
-
+      
       ProcessCommand = ReactiveCommand.Create(StartProcess, checkTrigger);
 
       ChoiceSavePath = ReactiveCommand.Create(() =>
@@ -165,7 +180,7 @@ namespace WordProcessor.ViewModel
       Algorithms = new ObservableCollection<Algorithm>(Algorithm.Values);
       AlgorithmType = Algorithms.First();
       
-      Separators = new ObservableCollection<Separator>(FlexEnumHelper.Values<Separator>());
+      Separators = new ObservableCollection<Separator>(Separator.Values);
       SeparatorType = Separators.First();
 
       this.WhenValueChanged(model => model.SeparatorType).Subscribe(separator =>
@@ -185,6 +200,17 @@ namespace WordProcessor.ViewModel
         this.RaisePropertyChanged(nameof(AlgorithmData));
       });
       
+      this.WhenValueChanged(v => v.Language)
+        .Subscribe(s =>
+        {
+          this.RaisePropertyChanged(nameof(AlgorithmData));
+
+          this.RaisePropertyChanged(nameof(CustomSeparator));
+
+          this.RaisePropertyChanged(nameof(SavePath));
+          this.RaisePropertyChanged(nameof(ProcessText));
+        });
+
       OpenFileAfterProcess = true;
     }
 
@@ -196,8 +222,8 @@ namespace WordProcessor.ViewModel
       {
         if (File.Exists(fullFilePath))
         {
-          var questionResult = MessageBox.Show("Данный файл уже существует, вы уверены, что хотите перезаписать его?",
-            "Внимание", 
+          var questionResult = MessageBox.Show(LocalizationManager.GetLocalizationString("m_FileExistsOverwriteQuestion"),
+            LocalizationManager.GetLocalizationString("m_Warning"), 
             MessageBoxButtons.OKCancel, 
             MessageBoxIcon.Question);
           

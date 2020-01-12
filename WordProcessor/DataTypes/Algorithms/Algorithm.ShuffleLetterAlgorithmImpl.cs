@@ -13,9 +13,11 @@ namespace WordProcessor.DataTypes.Algorithms
         '-'
       };
 
-      public override string Name => "Перемешать буквы";
+      public override string Name => LocalizationManager.GetLocalizationString("m_algo_name_ShuffleLetter");
 
       public override bool IsRequiredAlgorithmData => false;
+
+      public override string ErrorMessageForEmptyInput => string.Empty;
 
       protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
       {

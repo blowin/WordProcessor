@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using WordProcessor.DataTypes;
 using WordProcessor.DataTypes.Algorithms;
-using WordProcessor.Enums;
 using WordProcessor.ViewModel;
 
 namespace WordProcessor.Validator
@@ -11,40 +11,21 @@ namespace WordProcessor.Validator
     {
       RuleFor(vm => vm.ProcessText)
         .NotEmpty()
-        .WithMessage("Необходимы данные для обработки");
+        .WithMessage(v => LocalizationManager.GetLocalizationString("m_valid_ProcessText"));
       
       RuleFor(vm => vm.AlgorithmData)
         .NotEmpty()
         .When(s => s.AlgorithmType.IsRequiredAlgorithmData)
-        .WithMessage(GetErrorAlgorithmMessage);
+        .WithMessage(vm => vm.AlgorithmType.ErrorMessageForEmptyInput);
 
-      RuleFor(vw => vw.CustomSeparator)
+      RuleFor(vm => vm.CustomSeparator)
         .NotEmpty()
-        .When(vw => vw.EnableSeparatorData)
-        .WithMessage(GetErrorSeparatorMessage);
+        .When(vm => vm.EnableSeparatorData)
+        .WithMessage(_ => LocalizationManager.GetLocalizationString("m_valid_CustomSeparator"));
 
-      RuleFor(vw => vw.SavePath)
+      RuleFor(vm => vm.SavePath)
         .NotEmpty()
-        .WithMessage("Необходим путь для сохранения файла");
-    }
-
-    private string GetErrorAlgorithmMessage(MainWindowViewModel vm)
-    {
-      if (vm.AlgorithmType == Algorithm.ShuffleTranslate)
-        return "Укажите разделитель между словом и переводом(к прим. '-')";
-
-      if (vm.AlgorithmType == Algorithm.ReplaceLetter)
-        return "Укажите количество букв для замены(к прим. '1')";
-
-      return string.Empty;
-    }
-
-    private string GetErrorSeparatorMessage(MainWindowViewModel vm)
-    {
-      if (vm.SeparatorType == Separator.Custom)
-        return "Указажите разделитель(к прим. ',')";
-
-      return string.Empty;
+        .WithMessage(_ => LocalizationManager.GetLocalizationString("m_valid_SavePath"));
     }
   }
 }

@@ -12,9 +12,12 @@ namespace WordProcessor.DataTypes.Algorithms
         " "
       };
 
-      public override string Name => "Перемешать перевод";
+      public override string Name => LocalizationManager.GetLocalizationString("m_algo_name_ShuffleTranslate");
 
       public override bool IsRequiredAlgorithmData => true;
+
+      public override string ErrorMessageForEmptyInput 
+        => LocalizationManager.GetLocalizationString("m_valid_AlgorithmData_ShuffleTranslate");
 
       protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
       {

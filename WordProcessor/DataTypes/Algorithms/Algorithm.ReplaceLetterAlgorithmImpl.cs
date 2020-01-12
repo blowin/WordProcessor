@@ -8,9 +8,12 @@ namespace WordProcessor.DataTypes.Algorithms
   {
     private sealed class ReplaceLetterAlgorithmImpl : Algorithm
     {
-      public override string Name => "Убрать буквы";
+      public override string Name => LocalizationManager.GetLocalizationString("m_algo_name_ReplaceLetter");
 
       public override bool IsRequiredAlgorithmData => true;
+
+      public override string ErrorMessageForEmptyInput =>
+        LocalizationManager.GetLocalizationString("m_valid_AlgorithmData_ReplaceLetter");
 
       protected override IEnumerable<string> ProcessInternal(IEnumerable<string> input, string algorithmData)
       {
