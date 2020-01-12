@@ -66,7 +66,8 @@
 
         <TextBox Grid.Row="1" MinHeight="30" Margin="0, 5, 0, 0" AcceptsReturn="True" TextWrapping="Wrap"
                  Text="{Binding ProcessText, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                 Validation.ErrorTemplate="{StaticResource errorTemplate}"/>
+                 Validation.ErrorTemplate="{StaticResource errorTemplate}"
+                 VerticalScrollBarVisibility="Auto"/>
         <StackPanel Grid.Row="2" Margin="0, 5, 0, 0">
             <DockPanel LastChildFill="True" Margin="0,5,0,0" >
                 <Label DockPanel.Dock="Left" Margin="0,0,5,0" Content="{DynamicResource m_lblSave}" />
